@@ -21,3 +21,6 @@ steps:
 
 substitutions:
   _BUCKET_NAME: "my-mlops-bucket-ritik"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
