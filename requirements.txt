@@ -1,0 +1,8 @@
+pandas
+xgboost
+scikit-learn
+mlflow
+google-cloud-aiplatform
+google-cloud-storage
+kfp
+db-dtypes
