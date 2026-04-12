@@ -57,3 +57,5 @@ if st.button("Check Eligibility"):
 
 st.divider()
 st.info("Model: XGBoost Classifier | Data: Loan Approval Dataset")
+
+#ritik
