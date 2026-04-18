@@ -13,19 +13,23 @@ def train(bucket_name):
     data_path = f"gs://{bucket_name}/DATA/loan_approval_dataset.csv"
     df = pd.read_csv(data_path)
     
-    # 2. Cleaning
+    # 2. Cleaning & Encoding
     df.columns = df.columns.str.strip()
     X = df.drop(columns=['loan_id', 'loan_status']) 
     y = df['loan_status'].apply(lambda x: 1 if x.strip() == 'Approved' else 0)
     X = pd.get_dummies(X)
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    # Train-Test Split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
     with mlflow.start_run():
         model = xgb.XGBClassifier() 
-        model.fit(X_train, y_train)
         
-        predictions = model.predict(X_test)
+        # PLAN B: .values use karke feature names hata diye
+        model.fit(X_train.values, y_train) 
+        
+        # Validation
+        predictions = model.predict(X_test.values)
         acc = accuracy_score(y_test, predictions)
         mlflow.log_metric("accuracy", acc)
         

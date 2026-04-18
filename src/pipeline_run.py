@@ -2,14 +2,16 @@ from google.cloud import aiplatform
 
 def create_run_pipeline(project_id, bucket_name, image_uri):
     # Vertex AI SDK ko initialize karna
-    aiplatform.init(project=project_id, location='us-central1')
+    aiplatform.init(
+        project=project_id, 
+        location='us-central1',
+        staging_bucket=f"gs://{bucket_name}"
+    )
 
     # Custom Job Define karna
-    # 'container_uri' wahi hai jo Cloud Build ne Artifact Registry mein push kiya hai
     job = aiplatform.CustomContainerTrainingJob(
         display_name="loan-approval-training-pipeline",
         container_uri=image_uri,
-        # Serving container: Training ke baad model deploy karne ke liye
         model_serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/xgboost-cpu.1-6:latest"
     )
 
@@ -23,7 +25,7 @@ def create_run_pipeline(project_id, bucket_name, image_uri):
         sync=True
     )
 
-    # Model ko Endpoint par Deploy karna (Taaki aap API call kar sakein)
+    # Model ko Endpoint par Deploy karna
     print("Deploying model to endpoint...")
     endpoint = model.deploy(
         machine_type="n1-standard-4",
@@ -35,11 +37,8 @@ def create_run_pipeline(project_id, bucket_name, image_uri):
     print(f"Endpoint Resource Name: {endpoint.resource_name}")
 
 if __name__ == "__main__":
-    # AAPKE ACTUAL CREDENTIALS YAHAN HAIN:
     PROJECT_ID = "neural-quarter-490713-b0"
     BUCKET_NAME = "my-mlops-bucket-ritik"
-    
-    # Image URI: Ensure karein ki Artifact Registry mein 'loan-trainer' ya jo bhi aapne build kiya hai wahi naam ho
     IMAGE_URI = f"us-central1-docker.pkg.dev/{PROJECT_ID}/ml-repo/loan-trainer:latest"
     
     create_run_pipeline(PROJECT_ID, BUCKET_NAME, IMAGE_URI)
