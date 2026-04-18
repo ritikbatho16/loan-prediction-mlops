@@ -1,0 +1,26 @@
+# Python bytecode (Local execution files)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment (Very important to ignore)
+venv/
+env/
+ENV/
+
+# Google Cloud Service Account Keys (Security)
+*.json
+
+# Data files (Datasets and local models)
+*.csv
+*.xlsx
+*.bst
+*.pkl
+*.h5
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Streamlit local config
+.streamlit/
